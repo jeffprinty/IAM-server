@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Boop</title>
+  <link rel="stylesheet" href="auto-complete.css" />
+</head>
+<body>
+Hi there
+  <input name="q" id="autocomplete" type="text" />
+  <script src="auto-complete.min.js"></script>
+  <script type="text/javascript">
+    function getJSON(url, query, callback) {
+      var request = new XMLHttpRequest();
+      var qString = url + '?q=' + query;
+      request.open('GET', qString, true);
+
+      request.onload = function() {
+        if (request.status >= 200 && request.status < 400) {
+          // Success!
+          var data = JSON.parse(request.responseText);
+          // console.log("data", data);
+          var remap = data.map(function(item){
+            return item['SCHOOL_NAME__C']
+          });
+          // console.log("remap", remap);
+          callback(remap);
+        } else {
+          // We reached our target server, but it returned an error
+
+        }
+      };
+
+      request.onerror = function() {
+        // There was a connection error of some sort
+      };
+
+      request.send();
+    }
+    new autoComplete({
+      selector: '#autocomplete',
+      source: function(term, response){
+          getJSON('/api/find', term, function(data){
+              console.log("data", data);
+            
+            response(data);
+          });
+      }
+    });
+  </script>
+</body>
+</html>
