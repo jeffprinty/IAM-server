@@ -1,9 +1,10 @@
-var koa = require('koa')  
+const koa = require('koa')  
 , route = require('koa-route')
 , app = module.exports = new koa();
 const serve = require('koa-static');
+const levenSort = require('leven-sort');
 
-const schools = require('./schools.json')
+const schools = require('./schoolsV2.json')
 
 app.use(serve(__dirname + '/public/'));  
 app.use(route.get('/school/:name', show));
@@ -13,29 +14,55 @@ function list() {
 }
 
 app.use(
-  route.get('/api/find', find)
+  route.get('/api/find', function (req) {
+    const query = req.query.q;
+    const found = schools.filter(function(sch){
+      const schoolName = sch['SCHOOL_NAME__C'].toLowerCase();
+      return schoolName.indexOf(query.toLowerCase()) !== -1;
+    })
+    const sorted = levenSort(found, query, 'SCHOOL_NAME__C');
+    this.body = sorted;
+    
+  })
 )
 
-function find(req) {
-  var query = req.query.q;
-  var found = schools.filter(function(sch){
-    var schoolName = sch['SCHOOL_NAME__C'];
-    return schoolName.toLowerCase().indexOf(query.toLowerCase()) !== -1;
+app.use(
+  route.get('/api/l', function (req) {
+    const query = req.query.q;
+    const found = schools.filter(function(sch){
+      const schoolName = sch['SCHOOL_NAME__C'];
+      return schoolName.toLowerCase().substr(0, query.length) === query.toLowerCase();
+    })
+    this.body = found;
+    
   })
-  this.body = found;
-  
-}
+)
+
+app.use(
+  route.get('/api/list', list)
+)
+
+app.use(
+  route.get('/api/school', function (req) {
+    const query = req.query.q;
+    const found = schools.filter(function(sch){
+      return query === sch['SCHOOL_NAME__C'];
+    })
+    if (found.length > 0) {
+      this.body = found;
+    } else {
+      this.body = false;
+    }
+    
+  })
+)
 
 function *show(title) {  
   title = decodeURI(title);
-  var res = yield books.find({title: title});
+
   this.body = res;
 }
-route.get('/book/:title', function(req, res) {
-  title = decodeURI(req.params.title);
-  book.find({title: title}, function(error, book) {
-    res.send(book);
-  });
-});
+
+
 console.log('listening');
 if (!module.parent) app.listen(3000);

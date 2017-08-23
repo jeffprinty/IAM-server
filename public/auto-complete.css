@@ -8,6 +8,27 @@
 .autocomplete-suggestion b { font-weight: normal; color: #1f8dd6; }
 .autocomplete-suggestion.selected { background: #f0f0f0; }
 
-input#autocomplete {
+input[type="text"] {
+
   width: 300px;
+  display: block;
+  margin: 10px auto;
+}
+
+#wrap {
+  width: 600px;
+  background-color: #DAF4D4;
+  padding: 20px;
+  margin: 10px auto;
+}
+pre {
+  text-align: left;
+}
+
+table td {
+  text-align: left;
+}
+
+.same {
+  background-color: #FFEEF0;
 }

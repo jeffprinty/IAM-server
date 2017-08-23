@@ -4,28 +4,39 @@
   <title>Boop</title>
   <link rel="stylesheet" href="auto-complete.css" />
 </head>
-<body>
-Hi there
-  <input name="q" id="autocomplete" type="text" />
+<body style="font-family: tahoma; text-align: center;">
+  <div id="wrap">
+    <h1>Macmillan Institution Autocomplete Proof of Concept</h1>
+    <div style="display:none">
+      <label for="autocomplete-first">Basic Institution search by first letters typed</label>
+      <input name="q" id="autocomplete-first" type="text" />
+    </div>
+    <div>
+      <label for="autocomplete">Institution search with Levenshtein sort</label>
+      <input name="q" id="autocomplete" type="text" />
+    </div>
+    <button id="check">Check Validity</button>
+    <button id="genTable">Generate Table</button>
+    <pre id="result"></pre>
+  </div>
+  <table>
+    <tbody id="out"></tbody>
+  </table>
   <script src="auto-complete.min.js"></script>
   <script type="text/javascript">
     function getJSON(url, query, callback) {
       var request = new XMLHttpRequest();
-      var qString = url + '?q=' + query;
+      var qString = url;
+      if (query !== false) {
+        qString += '?q=' + query
+      }
       request.open('GET', qString, true);
 
       request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
-          // Success!
           var data = JSON.parse(request.responseText);
-          // console.log("data", data);
-          var remap = data.map(function(item){
-            return item['SCHOOL_NAME__C']
-          });
-          // console.log("remap", remap);
-          callback(remap);
+          callback(data);
         } else {
-          // We reached our target server, but it returned an error
 
         }
       };
@@ -40,12 +51,52 @@ Hi there
       selector: '#autocomplete',
       source: function(term, response){
           getJSON('/api/find', term, function(data){
-              console.log("data", data);
-            
-            response(data);
+            var remap = data.map(function(item){
+              var schoolString = item['SCHOOL_NAME__C'];
+              if (item.multiple) {
+                schoolString += ' - ' + item['SCHOOL_CITY__C'] + ', ' + item['SCHOOL_STATE__C'];
+                console.log("schoolString", schoolString);
+              }
+              return schoolString
+            });
+            response(remap);
           });
       }
     });
+    new autoComplete({
+      selector: '#autocomplete-first',
+      source: function(term, response){
+          getJSON('/api/l', term, function(data){
+              console.log("data", data);
+            var remap = data.map(function(item){
+              return item['SCHOOL_NAME__C']
+            });
+            response(remap);
+          });
+      }
+    });
+    const outputTable = document.getElementById('out');
+    let prevSchool;
+    document.getElementById('genTable').onclick = function(){
+      getJSON('/api/list', false, function(data){
+        for (var i = 0; i<data.length; i++) {
+          const { SCHOOL_NAME__C, SCHOOL_STATE__C, SCHOOL_CITY__C, multiple} = data[i];
+          var trElement = document.createElement('tr');
+          trElement.innerHTML = `<td class="${multiple ? 'same' : 'diff'}">${SCHOOL_NAME__C}</td><td>${SCHOOL_CITY__C}</td><td>${SCHOOL_STATE__C}</td>`;
+          prevSchool = SCHOOL_NAME__C
+          outputTable.appendChild(trElement); // Take string from placeholder variable and append it to <tr> node
+        }
+          // document.getElementById('out').
+      });
+    }
+    document.getElementById('check').onclick = function(){
+      var schoolVal = document.getElementById('autocomplete').value;
+      console.log("schoolVal", schoolVal);
+      getJSON('/api/school', schoolVal, function(data){
+          console.log("data", data);
+          document.getElementById('result').innerHTML = JSON.stringify(data, null, 2)
+      });
+    }
   </script>
 </body>
 </html>
