@@ -6,9 +6,11 @@ const serve = require('koa-static');
 const levenSort = require('leven-sort');
 const http = require('http');
 const https = require('https');
+const cors = require('kcors');
 
 const schools = require('./schoolsV3.json');
 
+app.use(cors());
 app.use(function *(){
   this.set('Access-Control-Allow-Origin', '*');
 });
