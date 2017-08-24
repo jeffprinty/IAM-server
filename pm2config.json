@@ -1,7 +1,8 @@
 {
   "name" : "IAM-API",
-  "script" : "index.js",
-  "env_production" : {
-    "NODE_ENV": "production"
-  }
+  "script" : "./index.js",
+  "watch": true,
+  "env": {
+    "NODE_ENV": "development"
+  },
 }
