@@ -66,11 +66,12 @@ function *show(title) {
   this.body = res;
 }
 
-
-console.log('listening');
-// if (!module.parent) app.listen(3000);
 http.createServer(app.callback()).listen(3000);
-https.createServer({
-  key: fs.readFileSync('/etc/letsencrypt/live/iam-api.mldev.cloud/privkey.pem'),
-  cert: fs.readFileSync('/etc/letsencrypt/live/iam-api.mldev.cloud/fullchain.pem')
-}, app.callback()).listen(3001);
+console.log('http listening on 3000');
+if (process.env.NODE_ENV) {
+  https.createServer({
+    key: fs.readFileSync('/etc/letsencrypt/live/iam-api.mldev.cloud/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/iam-api.mldev.cloud/fullchain.pem')
+  }, app.callback()).listen(3001);
+  console.log('https listening on 3001');
+}
