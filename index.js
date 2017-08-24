@@ -11,9 +11,6 @@ const cors = require('kcors');
 const schools = require('./schoolsV3.json');
 
 app.use(cors());
-app.use(function *(){
-  this.set('Access-Control-Allow-Origin', '*');
-});
 
 app.use(serve(__dirname + '/public/'));  
 app.use(route.get('/school/:name', show));
