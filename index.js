@@ -9,6 +9,10 @@ const https = require('https');
 
 const schools = require('./schoolsV3.json');
 
+app.use(function *(){
+  this.set('Access-Control-Allow-Origin', '*');
+});
+
 app.use(serve(__dirname + '/public/'));  
 app.use(route.get('/school/:name', show));
 
@@ -67,7 +71,7 @@ function *show(title) {
 }
 
 http.createServer(app.callback()).listen(3000);
-console.log('http listening on 3000', process.env.NODE_ENV);
+console.log('http listening on 3000');
 if (process.env.NODE_ENV === 'production') {
   https.createServer({
     key: fs.readFileSync('/etc/letsencrypt/live/iam-api.mldev.cloud/privkey.pem'),
