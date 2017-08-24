@@ -1,13 +1,14 @@
 const koa = require('koa')  ;
+const fs = require('fs')  ;
 const route = require('koa-route');
 const app = module.exports = new koa();
 const serve = require('koa-static');
 const levenSort = require('leven-sort');
-const ssl = require('koa-ssl');
+const http = require('http');
+const https = require('https');
 
 const schools = require('./schoolsV3.json');
 
-app.use(ssl());
 app.use(serve(__dirname + '/public/'));  
 app.use(route.get('/school/:name', show));
 
@@ -67,4 +68,9 @@ function *show(title) {
 
 
 console.log('listening');
-if (!module.parent) app.listen(3000);
+// if (!module.parent) app.listen(3000);
+http.createServer(app.callback()).listen(3000);
+https.createServer({
+  key: fs.readFileSync('/etc/letsencrypt/live/iam-api.mldev.cloud/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/iam-api.mldev.cloud/fullchain.pem')
+}, app.callback()).listen(3001);
