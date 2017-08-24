@@ -10,10 +10,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@rgrove/parse-xml": "^1.0.0",
     "koa": "^2.3.0",
     "koa-route": "^3.2.0",
     "koa-static": "^4.0.1",
-    "leven-sort": "^1.1.3"
+    "leven-sort": "^1.1.3",
+    "xml2js": "^0.4.19",
+    "xml2json": "^0.11.0"
   },
   "devDependencies": {
     "nodemon": "^1.11.0"

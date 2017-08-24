@@ -50,9 +50,9 @@
       source: function(term, response){
           getJSON('/api/find', term, function(data){
             var remap = data.map(function(item){
-              var schoolString = item['SCHOOL_NAME__C'];
+              var schoolString = item['SFSchoolName'];
               if (item.multiple) {
-                schoolString += ' - ' + item['SCHOOL_CITY__C'] + ', ' + item['SCHOOL_STATE__C'];
+                schoolString += ' - ' + item['SchoolCity'] + ', ' + item['SchoolState'];
               }
               // return schoolString;
               return Object.assign(item, {name: schoolString})
@@ -61,7 +61,7 @@
           });
       },
       renderItem: function (item, search){
-        return '<div class="autocomplete-suggestion" data-val="'+search+'" data-cAccount="'+item['SFCID__C']+'">'+item['name']+'</div>';
+        return '<div class="autocomplete-suggestion" data-val="'+search+'" data-cAccount="'+item['SFCID']+'">'+item['name']+'</div>';
       },
       onSelect: function(e, term, item){
         var account = item.getAttribute('data-cAccount');
@@ -75,7 +75,7 @@
       source: function(term, response){
           getJSON('/api/l', term, function(data){
             var remap = data.map(function(item){
-              return item['SCHOOL_NAME__C']
+              return item['SFSchoolName']
             });
             response(remap);
           });
@@ -86,10 +86,11 @@
     document.getElementById('genTable').onclick = function(){
       getJSON('/api/list', false, function(data){
         for (var i = 0; i<data.length; i++) {
-          const { SCHOOL_NAME__C, SCHOOL_STATE__C, SCHOOL_CITY__C, SFCID__C, multiple} = data[i];
+          const { SFSchoolName, SchoolState, SchoolCity, SFCID, multiple} = data[i];
+
           var trElement = document.createElement('tr');
-          trElement.innerHTML = `<td class="${multiple ? 'same' : 'diff'}">${SCHOOL_NAME__C}</td><td>${SFCID__C}</td><td>${SCHOOL_CITY__C}</td><td>${SCHOOL_STATE__C}</td>`;
-          prevSchool = SCHOOL_NAME__C
+          trElement.innerHTML = `<td class="${multiple ? 'same' : 'diff'}">${SFSchoolName}</td><td>${SFCID}</td><td>${SchoolCity}</td><td>${SchoolState}</td>`;
+          prevSchool = SFSchoolName
           outputTable.appendChild(trElement); // Take string from placeholder variable and append it to <tr> node
         }
           // document.getElementById('out').

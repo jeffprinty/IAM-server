@@ -4,7 +4,7 @@ const koa = require('koa')
 const serve = require('koa-static');
 const levenSort = require('leven-sort');
 
-const schools = require('./schoolsV2.json')
+const schools = require('./schoolsV3.json');
 
 app.use(serve(__dirname + '/public/'));  
 app.use(route.get('/school/:name', show));
@@ -17,10 +17,10 @@ app.use(
   route.get('/api/find', function (req) {
     const query = req.query.q;
     const found = schools.filter(function(sch){
-      const schoolName = sch['SCHOOL_NAME__C'].toLowerCase();
+      const schoolName = sch['SFSchoolName'].toLowerCase();
       return schoolName.indexOf(query.toLowerCase()) !== -1;
     })
-    const sorted = levenSort(found, query, 'SCHOOL_NAME__C');
+    const sorted = levenSort(found, query, 'SFSchoolName');
     this.body = sorted;
     
   })
@@ -30,7 +30,7 @@ app.use(
   route.get('/api/l', function (req) {
     const query = req.query.q;
     const found = schools.filter(function(sch){
-      const schoolName = sch['SCHOOL_NAME__C'];
+      const schoolName = sch['SFSchoolName'];
       return schoolName.toLowerCase().substr(0, query.length) === query.toLowerCase();
     })
     this.body = found;
@@ -46,7 +46,7 @@ app.use(
   route.get('/api/school', function (req) {
     const query = req.query.q;
     const found = schools.filter(function(sch){
-      return query === sch['SCHOOL_NAME__C'];
+      return query === sch['SFSchoolName'];
     })
     if (found.length > 0) {
       this.body = found;
