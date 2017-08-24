@@ -1,11 +1,13 @@
-const koa = require('koa')  
-, route = require('koa-route')
-, app = module.exports = new koa();
+const koa = require('koa')  ;
+const route = require('koa-route');
+const app = module.exports = new koa();
 const serve = require('koa-static');
 const levenSort = require('leven-sort');
+const ssl = require('koa-ssl');
 
 const schools = require('./schoolsV3.json');
 
+app.use(ssl());
 app.use(serve(__dirname + '/public/'));  
 app.use(route.get('/school/:name', show));
 
