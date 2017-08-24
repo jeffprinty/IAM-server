@@ -67,7 +67,7 @@ function *show(title) {
 }
 
 http.createServer(app.callback()).listen(3000);
-console.log('http listening on 3000');
+console.log('http listening on 3000', process.env.NODE_ENV);
 if (process.env.NODE_ENV === 'production') {
   https.createServer({
     key: fs.readFileSync('/etc/letsencrypt/live/iam-api.mldev.cloud/privkey.pem'),
