@@ -15,6 +15,8 @@
     </div>
     <button id="check">Check Validity</button>
     <button id="genTable">Generate Table</button>
+    <label for="sortSFCID" style="font-size: 8pt">Sort by SFCID</label>
+    <input id="sortSFCID" type="checkbox" />
     <pre id="result"></pre>
   </div>
   <table>
@@ -84,16 +86,43 @@
     const outputTable = document.getElementById('out');
     let prevSchool;
     document.getElementById('genTable').onclick = function(){
+      outputTable.innerHTML = '';
+      const sortSFCID = document.getElementById('sortSFCID');
+      console.log("sortSFCID", sortSFCID);
       getJSON('/api/list', false, function(data){
-        for (var i = 0; i<data.length; i++) {
-          const { SFSchoolName, SchoolState, SchoolCity, SFCID, multiple} = data[i];
+        let schoolData = data;
+        // Sort
+        if (sortSFCID.checked) {
+          schoolData = data.sort(function(a,b){
+            if (a.SFCID < b.SFCID) return -1;
+            if (a.SFCID > b.SFCID) return 1;
+            return 0;
+          });
 
+        }
+        let lastSFCID;
+        for (var i = 0; i<schoolData.length; i++) {
+          const { SFSchoolName, SchoolState, SchoolCity, SFCID, multiple} = schoolData[i];
           var trElement = document.createElement('tr');
-          trElement.innerHTML = `<td class="${multiple ? 'same' : 'diff'}">${SFSchoolName}</td><td>${SFCID}</td><td>${SchoolCity}</td><td>${SchoolState}</td>`;
+          trElement.innerHTML =
+`<td class="${multiple ? 'same' : 'diff'}">
+  ${SFSchoolName}
+</td>
+<td class="${sortSFCID.checked && SFCID === lastSFCID ? 'sameID' : 'diff'}">
+  ${SFCID}
+</td>
+<td>
+  ${SchoolCity}
+</td>
+<td>
+  ${SchoolState}
+</td>`;
           prevSchool = SFSchoolName
+          lastSFCID = SFCID;
           outputTable.appendChild(trElement); // Take string from placeholder variable and append it to <tr> node
         }
           // document.getElementById('out').
+        console.log('Table generated with ' + schoolData.length + ' records');
       });
     }
     document.getElementById('check').onclick = function(){
