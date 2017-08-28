@@ -9,7 +9,11 @@ const https = require('https');
 const cors = require('kcors');
 const loki = require('lokijs');
 
-const schools = require('./schoolsV3.json');
+const allSchools = require('./schoolsV3.json');
+const schools = allSchools.filter(function(sch){
+  return sch['SFCID'] !== 'C02777';
+});
+
 const db = new loki('./loki.json', {
   autoload: true,
   autoloadCallback : dbInit,
