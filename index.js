@@ -73,7 +73,7 @@ app.use(
 app.use(
   route.get('/api/new', function (req) {
     const query = req.query.q;
-    const found = institutions.chain
+    const found = institutions.chain()
       .find({ 'SFSchoolName' : { '$contains' : query } })
       .simplesort('SFSchoolName')
       .data();
