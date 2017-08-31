@@ -65,7 +65,7 @@ app.use(
   route.get('/api/find', function (req) {
     const query = req.query.q;
     const found = institutions.chain()
-      .find({ 'SFSchoolName' : { '$contains' : query } })
+      .find({ 'SFSchoolName' : { '$regex': [query, 'i'] } })
       .data();
     let results = found;
     if (found.length < 50) {
