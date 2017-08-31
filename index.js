@@ -18,7 +18,7 @@ const db = new loki('./loki.json', {
   autoload: true,
   autoloadCallback : dbInit,
   autosave: true,
-  autosaveInterval: 30000
+  autosaveInterval: 60000
 });
 
 let institutions = db.getCollection('institutions');
@@ -67,6 +67,17 @@ app.use(
     const found = institutions.find({ 'SFSchoolName' : { '$contains' : query } });
     const sorted = levenSort(found, query, 'SFSchoolName');
     this.body = sorted;
+
+  })
+)
+app.use(
+  route.get('/api/new', function (req) {
+    const query = req.query.q;
+    const found = institutions.chain
+      .find({ 'SFSchoolName' : { '$contains' : query } })
+      .simplesort('SFSchoolName')
+      .data();
+    this.body = found;
 
   })
 )
