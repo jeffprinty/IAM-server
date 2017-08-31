@@ -16,9 +16,7 @@ const schools = allSchools.filter(function(sch){
 
 const db = new loki('./loki.json', {
   autoload: true,
-  autoloadCallback : dbInit,
-  autosave: true,
-  autosaveInterval: 60000
+  autoloadCallback : dbInit
 });
 
 let institutions = db.getCollection('institutions');
