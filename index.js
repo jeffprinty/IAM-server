@@ -66,7 +66,6 @@ app.use(
     const query = req.query.q;
     const found = institutions.chain()
       .find({ 'SFSchoolName' : { '$contains' : query } })
-      .simplesort('SFSchoolName')
       .data();
     let results = found;
     if (found.length < 50) {
