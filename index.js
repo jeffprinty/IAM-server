@@ -71,6 +71,8 @@ app.use(
     let results = found;
     if (found.length < 50) {
       results = levenSort(found, query, 'SFSchoolName');
+    } else {
+      results = found.slice(0, 100);
     }
     this.body = results;
   })
