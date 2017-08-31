@@ -66,11 +66,13 @@ app.use(
     const query = req.query.q;
     const found = institutions.chain()
       .find({ 'SFSchoolName' : { '$contains' : query } })
-      .limit(50)
+      .simplesort('SFSchoolName')
       .data();
-    const sorted = levenSort(found, query, 'SFSchoolName');
-    this.body = sorted;
-
+    let results = found;
+    if (found.length < 50) {
+      results = levenSort(found, query, 'SFSchoolName');
+    }
+    this.body = results;
   })
 )
 app.use(
@@ -79,6 +81,7 @@ app.use(
     const found = institutions.chain()
       .find({ 'SFSchoolName' : { '$contains' : query } })
       .simplesort('SFSchoolName')
+      .limit(50)
       .data();
     this.body = found;
 
