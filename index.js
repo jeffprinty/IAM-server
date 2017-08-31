@@ -64,7 +64,10 @@ app.use(
 app.use(
   route.get('/api/find', function (req) {
     const query = req.query.q;
-    const found = institutions.find({ 'SFSchoolName' : { '$contains' : query } });
+    const found = institutions.chain()
+      .find({ 'SFSchoolName' : { '$contains' : query } })
+      .limit(50)
+      .data();
     const sorted = levenSort(found, query, 'SFSchoolName');
     this.body = sorted;
 
