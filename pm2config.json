@@ -1,8 +1,6 @@
 {
   "name" : "IAM-API",
   "script" : "./index.js",
-  "watch": true,
-  "ignore_watch" : ["node_modules", "loki.json"],
   "env": {
     "NODE_ENV": "production"
   },
