@@ -24,6 +24,7 @@ function dbInit() {
     addEntries();
   }
 }
+dbInit();
 
 function addEntries() {
   if (institutions.count() === 0) {
