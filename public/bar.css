@@ -1,5 +1,6 @@
 #barchart {
   position: relative;
+  min-width: 400px;
 }
 #barchart div {
   background: blue;

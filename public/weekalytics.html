@@ -40,15 +40,17 @@
     console.log("sortSFCID", sortSFCID);
     getJSON('/api/requests', false, function(data){
       const { weekHours } = data;
-      const max = Math.max.apply( Math, weekHours );
-      console.log("max", max);
+      let max = Math.max.apply( Math, weekHours );
+      if (max === 0) {
+        max = 100
+      }
+      // console.log("max", max);
       // wrap.innerHTML = `<ul id="barchart" style="min-height: ${max}px"></ul>`
       const bar = document.getElementById('barchart');
       for (var i = 0; i<weekHours.length; i++) {
         var div = document.createElement('div');
         const hourCount = weekHours[i];
         const width = Math.floor(hourCount/max * 100);
-        console.log("width", width);
         div.className = 'bar';
         div.style.cssText = `width: ${ width }%`;
         div.innerHTML = hourCount;
