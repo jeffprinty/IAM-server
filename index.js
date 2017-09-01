@@ -14,10 +14,7 @@ const schools = allSchools.filter(function(sch){
   return sch['SFCID'] !== 'C02777';
 });
 
-const db = new loki('./loki.json', {
-  autoload: true,
-  autoloadCallback : dbInit
-});
+const db = new loki('./loki.json');
 
 let institutions = db.getCollection('institutions');
 function dbInit() {
@@ -96,7 +93,7 @@ app.use(
     weekalytics();
     count += 1;
     if (found.length === 0) {
-      results = institutions.findOne({ 'SFCID': { '$eq': 'C02779' } });
+      results = institutions.find({ 'SFCID': { '$eq': 'C02779' } });
     } else if (found.length < 50) {
       results = levenSort(found, query, 'SFSchoolName');
     } else {
