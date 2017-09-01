@@ -37,6 +37,8 @@ function addEntries() {
   console.log(":: Institutions in database : " + institutions.count());
 }
 
+let weekHours = Array.apply(null, Array(168)).map(Number.prototype.valueOf,0);
+let count = 0;
 app.use(cors());
 
 app.use(serve(__dirname + '/public/'));
@@ -59,6 +61,22 @@ app.use(
   })
 )
 
+function getHour() {
+
+  const d = new Date();
+  const days = d.getDay();
+  const weekHrs = days*24;
+  const hrs = d.getHours();
+  return weekHrs + hrs;
+}
+
+function weekalytics() {
+  const hr = getHour();
+  let val = weekHours[hr] || 0;
+  val += 1;
+  weekHours[hr] = val;
+}
+
 app.use(
   route.get('/api/find', function (req) {
     const query = req.query.q;
@@ -66,6 +84,8 @@ app.use(
       .find({ 'SFSchoolName' : { '$regex': [query, 'i'] } })
       .data();
     let results = found;
+    weekalytics();
+    count += 1;
     if (found.length < 50) {
       results = levenSort(found, query, 'SFSchoolName');
     } else {
@@ -74,11 +94,22 @@ app.use(
     this.body = results;
   })
 )
+
+
+app.use(
+  route.get('/api/requests', function (req) {
+    this.body = {
+      weekHours,
+      count
+    };
+  })
+)
+
 app.use(
   route.get('/api/new', function (req) {
     const query = req.query.q;
     const found = institutions.chain()
-      .find({ 'SFSchoolName' : { '$contains' : query } })
+      .find({ 'SFSchoolName' : { '$regex': [query, 'i'] } })
       .simplesort('SFSchoolName')
       .limit(50)
       .data();

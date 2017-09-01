@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BETA Institution Autocomplete POC</title>
+  <link rel="stylesheet" href="bar.css" />
+</head>
+<body style="font-family: tahoma; text-align: center;">
+  <div id="wrap">
+    <div id="barchart"></div>
+  </div>
+  <script type="text/javascript">
+    function getJSON(url, query, callback) {
+      var request = new XMLHttpRequest();
+      var qString = url;
+      if (query !== false) {
+        qString += '?q=' + query
+      }
+      request.open('GET', qString, true);
+
+      request.onload = function() {
+        if (request.status >= 200 && request.status < 400) {
+          var data = JSON.parse(request.responseText);
+          callback(data);
+        } else {
+
+        }
+      };
+
+      request.onerror = function() {
+        // There was a connection error of some sort
+      };
+
+      request.send();
+    }
+    
+    const wrap = document.getElementById('wrap');
+    const bar = document.getElementById('barchart');
+    let prevSchool;
+    const sortSFCID = document.getElementById('sortSFCID');
+    console.log("sortSFCID", sortSFCID);
+    getJSON('/api/requests', false, function(data){
+      const { weekHours } = data;
+      const max = Math.max.apply( Math, weekHours );
+      console.log("max", max);
+      // wrap.innerHTML = `<ul id="barchart" style="min-height: ${max}px"></ul>`
+      const bar = document.getElementById('barchart');
+      for (var i = 0; i<weekHours.length; i++) {
+        var div = document.createElement('div');
+        const hourCount = weekHours[i];
+        const width = Math.floor(hourCount/max * 100);
+        console.log("width", width);
+        div.className = 'bar';
+        div.style.cssText = `width: ${ width }%`;
+        div.innerHTML = hourCount;
+        bar.appendChild(div);
+      }
+    })
+
+//           // document.getElementById('out').
+//         console.log('Table generated with ' + schoolData.length + ' records');
+//       });
+    // }
+  </script>
+</body>
+</html>
