@@ -41,7 +41,7 @@
     getJSON('/api/requests', false, function(data){
       const { weekHours } = data;
       let max = Math.max.apply( Math, weekHours );
-      if (max === 0) {
+      if (max < 100) {
         max = 100
       }
       // console.log("max", max);
