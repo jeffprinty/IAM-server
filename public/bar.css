@@ -2,6 +2,9 @@
   position: relative;
   min-width: 400px;
 }
+#barchart div label {
+  float: left;
+}
 #barchart div {
   background: blue;
   font: 10px sans-serif;
@@ -12,5 +15,5 @@
   color: white;
 }
 .bar {
-  min-width: 1em;
+  min-width: 50px;
 }

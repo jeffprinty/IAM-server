@@ -5,6 +5,7 @@
   <link rel="stylesheet" href="bar.css" />
 </head>
 <body style="font-family: tahoma; text-align: center;">
+  <h1>IAM-API Weekly Analytics</h1>
   <div id="wrap">
     <div id="barchart"></div>
   </div>
@@ -35,33 +36,28 @@
     
     const wrap = document.getElementById('wrap');
     const bar = document.getElementById('barchart');
-    let prevSchool;
-    const sortSFCID = document.getElementById('sortSFCID');
-    console.log("sortSFCID", sortSFCID);
+    var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ];
+
     getJSON('/api/requests', false, function(data){
       const { weekHours } = data;
       let max = Math.max.apply( Math, weekHours );
       if (max < 100) {
         max = 100
       }
-      // console.log("max", max);
-      // wrap.innerHTML = `<ul id="barchart" style="min-height: ${max}px"></ul>`
       const bar = document.getElementById('barchart');
       for (var i = 0; i<weekHours.length; i++) {
         var div = document.createElement('div');
         const hourCount = weekHours[i];
+        const day = Math.floor(i/24);
+        const dayName = days[day];
+        const hour = i - (day*24);
         const width = Math.floor(hourCount/max * 100);
         div.className = 'bar';
         div.style.cssText = `width: ${ width }%`;
-        div.innerHTML = hourCount;
+        div.innerHTML = `<label>${dayName}:${hour}</label>${hourCount}`;
         bar.appendChild(div);
       }
     })
-
-//           // document.getElementById('out').
-//         console.log('Table generated with ' + schoolData.length + ' records');
-//       });
-    // }
   </script>
 </body>
 </html>

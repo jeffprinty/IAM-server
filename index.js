@@ -86,7 +86,10 @@ app.use(
     let results = found;
     weekalytics();
     count += 1;
-    if (found.length < 50) {
+    if (found.length === 0) {
+      results = institutions.findOne({ 'SFCID': { '$eq': 'C02779' } });
+      console.log("results", results);
+    } else if (found.length < 50) {
       results = levenSort(found, query, 'SFSchoolName');
     } else {
       results = found.slice(0, 100);
