@@ -38,6 +38,10 @@
     const bar = document.getElementById('barchart');
     var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ];
 
+    function rainbow(n) {
+      return 'hsl(' + n + ',100%,50%)';
+    }
+
     getJSON('/api/requests', false, function(data){
       const { weekHours } = data;
       let max = Math.max.apply( Math, weekHours );
@@ -53,7 +57,7 @@
         const hour = i - (day*24);
         const width = Math.floor(hourCount/max * 100);
         div.className = 'bar';
-        div.style.cssText = `width: ${ width }%`;
+        div.style.cssText = `width: ${ width }%; background-color: ${ rainbow(i) }`;
         div.innerHTML = `<label>${dayName}:${hour}</label>${hourCount}`;
         bar.appendChild(div);
       }

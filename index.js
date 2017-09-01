@@ -39,6 +39,15 @@ function addEntries() {
 
 let weekHours = Array.apply(null, Array(168)).map(Number.prototype.valueOf,0);
 let count = 0;
+
+// function saveWeekData() {
+
+// }
+// TODO persist json
+// setTimeout(function(){
+//   saveWeekData();
+// }, 86400);
+
 app.use(cors());
 
 app.use(serve(__dirname + '/public/'));
@@ -88,7 +97,6 @@ app.use(
     count += 1;
     if (found.length === 0) {
       results = institutions.findOne({ 'SFCID': { '$eq': 'C02779' } });
-      console.log("results", results);
     } else if (found.length < 50) {
       results = levenSort(found, query, 'SFSchoolName');
     } else {
