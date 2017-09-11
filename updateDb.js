@@ -11,17 +11,14 @@ fs.readFile(__dirname + '/db.xml', function(err, data) {
       let newSchoolList = SchoolNameList.map((obj,i) => {
         let newObj = {}
         Object.keys(obj).forEach((key) => {
-          newObj[key] = obj[key].toString();
+          const cleanStr = obj[key].toString();
+          newObj[key] = cleanStr.replace(/\n/g, '');
         })
         return newObj;
       });
       const clean = cleanList(newSchoolList, 'SFSchoolName');
-      const json = JSON.stringify({
-        ArrayOfSchoolNameList: {
-          SchoolNameList: clean
-        }
-      },null,2);
-      fs.writeFile('./db.json', json, function (err) {
+      const json = JSON.stringify(clean,null,2);
+      fs.writeFile('./schoolsV4.json', json, function (err) {
         if (err) return console.log(err);
         console.log('writing to file');
       });

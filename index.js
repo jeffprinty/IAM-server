@@ -9,7 +9,7 @@ const https = require('https');
 const cors = require('kcors');
 const loki = require('lokijs');
 
-const allSchools = require('./schoolsV3.json');
+const allSchools = require('./schoolsV4.json');
 const schools = allSchools.filter(function(sch){
   return sch['SFCID'] !== 'C02777';
 });
