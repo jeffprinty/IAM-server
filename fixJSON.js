@@ -14,7 +14,7 @@ function xmlToJSON() {
     });
   });
 }
-
+const fixy = () => {
 fs.readFile( './prod.json', 'utf8', function(err, data) {
   const json = JSON.parse(data);
   const list = json['ArrayOfSchoolNameList']['SchoolNameList'];
@@ -29,7 +29,7 @@ fs.readFile( './prod.json', 'utf8', function(err, data) {
     console.log('writing to file');
   });
   // console.log("to json ->", json);
-});
+});}
 
 // const data = JSON.parse(jsonFile);
 // jsonFile['ArrayOfSchoolNameList'].forEach(function(item){
@@ -64,7 +64,7 @@ function decodeHTMLEntities(text) {
     return text;
 }
 
-function cleanList(array, field){
+export function cleanList(array, field){
   function compare(a, b) {
     if (a[field].substr(0,1).toLowerCase() < b[field].substr(0,1).toLowerCase()) return -1;
     if (a[field].substr(0,1).toLowerCase() < b[field].substr(0,1).toLowerCase()) return 1;
