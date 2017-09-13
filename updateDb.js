@@ -35,6 +35,7 @@ request({
         // console.log(a,b,a[field], a[field]);
         if (a[field].toLowerCase() < b[field].toLowerCase()) return -1;
         if (a[field].toLowerCase() < b[field].toLowerCase()) return 1;
+
         return 0;
       }
       const sorted = fixed.sort(compare);
@@ -56,6 +57,7 @@ request({
 function xmlToJson(url, callback) {
   var req = http.get(url, function(res) {
     var xml = '';
+
     res.on('data', function(chunk) {
       xml += chunk;
     });

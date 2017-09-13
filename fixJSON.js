@@ -59,7 +59,7 @@ export function decodeHTMLEntities(text) {
         ['quot', '"']
     ];
 
-    for (var i = 0, max = entities.length; i < max; ++i) 
+    for (var i = 0, max = entities.length; i < max; ++i)
         text = text.replace(new RegExp('&'+entities[i][0]+';', 'g'), entities[i][1]);
 
     return text;
@@ -70,6 +70,7 @@ export function cleanList(array, field){
     // console.log(a,b,a[field], a[field]);
     if (a[field].substr(0,1).toLowerCase() < b[field].substr(0,1).toLowerCase()) return -1;
     if (a[field].substr(0,1).toLowerCase() < b[field].substr(0,1).toLowerCase()) return 1;
+
     return 0;
   }
   const cleanArr = array.map

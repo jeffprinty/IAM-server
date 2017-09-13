@@ -47,7 +47,7 @@ let count = 0;
 // }, 86400);
 
 app.use(cors({
-  'Access-Control-Allow-Origin': '*'
+  origin: '*'
 }));
 
 app.use(serve(__dirname + '/public/'));
