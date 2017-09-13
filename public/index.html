@@ -35,6 +35,7 @@
       request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
           var data = JSON.parse(request.responseText);
+          console.log("data", data.length);
           callback(data);
         } else {
 
@@ -83,14 +84,14 @@
           });
       }
     });
-    const outputTable = document.getElementById('out');
-    let prevSchool;
+    var outputTable = document.getElementById('out');
+    var prevSchool;
     document.getElementById('genTable').onclick = function(){
       outputTable.innerHTML = '';
-      const sortSFCID = document.getElementById('sortSFCID');
+      var sortSFCID = document.getElementById('sortSFCID');
       console.log("sortSFCID", sortSFCID);
       getJSON('/api/list', false, function(data){
-        let schoolData = data;
+        var schoolData = data;
         // Sort
         if (sortSFCID.checked) {
           schoolData = data.sort(function(a,b){
@@ -100,9 +101,13 @@
           });
 
         }
-        let lastSFCID;
+        var lastSFCID;
         for (var i = 0; i<schoolData.length; i++) {
-          const { SFSchoolName, SchoolState, SchoolCity, SFCID, multiple} = schoolData[i];
+var SFSchoolName = schoolData[i].SFSchoolName,
+    SchoolState = schoolData[i].SchoolState,
+    SchoolCity = schoolData[i].SchoolCity,
+    SFCID = schoolData[i].SFCID,
+    multiple = schoolData[i].multiple;
           var trElement = document.createElement('tr');
           trElement.innerHTML =
 `<td class="${multiple ? 'same' : 'diff'}">
