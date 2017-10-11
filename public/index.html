@@ -57,8 +57,8 @@
               if (item.multiple) {
                 schoolString += ' - ' + item['SchoolCity'] + ', ' + item['SchoolState'];
               }
-              // return schoolString;
-              return Object.assign(item, {name: schoolString})
+              item.name = schoolString;
+              return item;//Object.assign(item, {name: schoolString})
             });
             response(remap);
           });
