@@ -109,19 +109,16 @@ var SFSchoolName = schoolData[i].SFSchoolName,
     SFCID = schoolData[i].SFCID,
     multiple = schoolData[i].multiple;
           var trElement = document.createElement('tr');
-          trElement.innerHTML =
-`<td class="${multiple ? 'same' : 'diff'}">
-  ${SFSchoolName}
-</td>
-<td class="${sortSFCID.checked && SFCID === lastSFCID ? 'sameID' : 'diff'}">
-  ${SFCID}
-</td>
-<td>
-  ${SchoolCity}
-</td>
-<td>
-  ${SchoolState}
-</td>`;
+          trElement.innerHTML = "<td class='" + (multiple ? "same" : "diff") + "'>"
+          + SFSchoolName +
+          + "</td>" +
+          + "<td class='" + (sortSFCID.checked && SFCID === lastSFCID ? 'sameID' : 'diff') ">" +
+          + SFCID +
+          + "</td><td>" +
+          + SchoolCity +
+          + "</td><td>" +
+          + SchoolState +
+          "</td>";
           prevSchool = SFSchoolName
           lastSFCID = SFCID;
           outputTable.appendChild(trElement); // Take string from placeholder variable and append it to <tr> node
