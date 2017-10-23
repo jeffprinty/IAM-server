@@ -62,7 +62,7 @@
         const width = Math.floor(hourCount/max * 100);
         div.className = 'bar';
         div.style.cssText = `width: ${ width }%; background-color: ${ rainbow(i) }`;
-        div.innerHTML = `<label>${dayName}:${hour}</label><span>${utc}:${offsetInHours}</span>${hourCount}`;
+        div.innerHTML = `<label title="${utc}:${offsetInHours}">${dayName}:${hour}</label>${hourCount}`;
         bar.appendChild(div);
       }
     })
