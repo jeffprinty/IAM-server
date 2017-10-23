@@ -43,6 +43,7 @@
     }
 
     getJSON('/api/requests', false, function(data){
+      console.log(new Date().getTimezoneOffset());
       const { weekHours } = data;
       let max = Math.max.apply( Math, weekHours );
       if (max < 100) {

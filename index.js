@@ -18,7 +18,7 @@ const schools = allSchools.filter(function(sch){
 const dbLoaded = e => console.log('loaded', e);
 var idbAdapter = new lfsa();
 const db = new loki('./loki.db', {
-  autosave: true,
+  autosave: true, 
   autosaveInterval: 60000
 });
 
