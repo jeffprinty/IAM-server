@@ -61,7 +61,7 @@
         const hour = i - (day*24);
         let localTime = hour - offsetInHours;
         if (localTime < 0) {
-          localTime = 23 - offsetInHours;
+          localTime = 23 - localTime;
         }
         const width = Math.floor(hourCount/max * 100);
         div.className = 'bar';
