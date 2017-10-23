@@ -46,6 +46,10 @@
       const offset = new Date().getTimezoneOffset();
       const offsetInHours = offset/60;
       const utc = new Date().toString().match(/([A-Z]+[\+-][0-9]+.*)/)[1];
+      let localTime = hour - offsetInHours;
+      if (localTime < 0) {
+        localTime = 23 - offsetInHours;
+      }
       console.log('offset',offset, offsetInHours);
       const { weekHours } = data;
       let max = Math.max.apply( Math, weekHours );
@@ -62,7 +66,7 @@
         const width = Math.floor(hourCount/max * 100);
         div.className = 'bar';
         div.style.cssText = `width: ${ width }%; background-color: ${ rainbow(i) }`;
-        div.innerHTML = `<label title="${utc}:${hour - offsetInHours}">${dayName}:${hour}</label>${hourCount}`;
+        div.innerHTML = `<label title="${utc}:${localTime}">${dayName}:${hour}</label>${hourCount}`;
         bar.appendChild(div);
       }
     })
