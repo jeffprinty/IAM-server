@@ -8,25 +8,45 @@ const http = require('http');
 const https = require('https');
 const cors = require('kcors');
 const loki = require('lokijs');
+const lfsa = require('./node_modules/lokijs/src/loki-fs-structured-adapter.js');
 
 const allSchools = require('./schoolsV4.json');
 const schools = allSchools.filter(function(sch){
   return sch['SFCID'] !== 'C02777';
 });
 
-const db = new loki('./loki.json');
+const dbLoaded = e => console.log('loaded', e);
+var idbAdapter = new lfsa();
+const db = new loki('./loki.db', {
+  autosave: true,
+  autosaveInterval: 60000
+});
 
-let institutions = db.getCollection('institutions');
 function dbInit() {
-  if (institutions === null || institutions.count() === 0) {
-    console.log(":: Database initialized");
-    institutions = db.addCollection('institutions');
-    addEntries();
-  }
+  db.loadDatabase({}, () => {
+    console.log(':: db loaded');
+    let institutions = db.getCollection('institutions');
+    let analytics = db.getCollection('analytics');
+    if (institutions === null || institutions.count() === 0) {
+      console.log(":: Institutions Database initialized");
+      institutions = db.addCollection('institutions');
+      addEntries();
+    } else {
+      console.log(':: ' + institutions.count() + ' institutions loaded from db');
+    }
+    if (analytics === null || analytics.count() === 0) {
+      console.log(":: Analytics Database initialized");
+      analytics = db.addCollection('analytics');
+    } else {
+      console.log(':: ' + analytics.count() + ' weeks analytics loaded from db');
+    }
+    saveWeekData();
+  })
 }
 dbInit();
 
 function addEntries() {
+  let institutions = db.getCollection('institutions');
   if (institutions.count() === 0) {
     schools.forEach(function(school) {
       institutions.insert(school);
@@ -38,13 +58,14 @@ function addEntries() {
 let weekHours = Array.apply(null, Array(168)).map(Number.prototype.valueOf,0);
 let count = 0;
 
-// function saveWeekData() {
-
-// }
-// TODO persist json
-// setTimeout(function(){
-//   saveWeekData();
-// }, 86400);
+const whitelist = ['https://ssoqa-macmillan-learning.cs67.force.com', 'https://sso.macmillanlearning.com'];  
+function checkOriginAgainstWhitelist(ctx) {
+    const requestOrigin = ctx.accept.headers.origin;
+    if (!whitelist.includes(requestOrigin)) {
+        return ctx.throw(`🙈 ${requestOrigin} is not a valid origin`);
+    }
+    return requestOrigin;
+}
 
 app.use(cors({
   origin: '*'
@@ -71,13 +92,18 @@ app.use(
 )
 
 function getHour() {
-
   const d = new Date();
   const days = d.getDay();
   const weekHrs = days*24;
   const hrs = d.getHours();
   return weekHrs + hrs;
 }
+const weekOfYear = date => {
+  var d = new Date(+date);
+  d.setHours(0,0,0);
+  d.setDate(d.getDate()+4-(d.getDay()||7));
+  return Math.ceil((((d-new Date(d.getFullYear(),0,1))/8.64e7)+1)/7);
+};
 
 function weekalytics() {
   const hr = getHour();
@@ -85,6 +111,31 @@ function weekalytics() {
   val += 1;
   weekHours[hr] = val;
 }
+function saveWeekData() {
+  let analytics = db.getCollection('analytics');
+  const allAnalytics = analytics.find();
+  // console.log("allAnalytics", allAnalytics);
+  const currentWeek = weekOfYear(new Date());
+  var weekData = analytics.findObject({'week': currentWeek});
+  const total = weekHours.reduce((total,val) => total + val);
+  if (!weekData) {
+    console.log(':: new week created', currentWeek);
+    analytics.insert({
+      week: currentWeek,
+      requestsByHour: weekHours,
+      total
+    })
+  } else {
+    weekData.requestsByHour = weekHours;
+    weekData.total = total;
+    analytics.update(weekData);
+    console.log(":: weekData saved, total: ", total);
+  }
+  setTimeout(function(){
+    saveWeekData();
+  }, 60000);
+}
+
 
 app.use(
   route.get('/api/find', function (req) {
