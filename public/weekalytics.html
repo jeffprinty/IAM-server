@@ -46,10 +46,6 @@
       const offset = new Date().getTimezoneOffset();
       const offsetInHours = offset/60;
       const utc = new Date().toString().match(/([A-Z]+[\+-][0-9]+.*)/)[1];
-      let localTime = hour - offsetInHours;
-      if (localTime < 0) {
-        localTime = 23 - offsetInHours;
-      }
       console.log('offset',offset, offsetInHours);
       const { weekHours } = data;
       let max = Math.max.apply( Math, weekHours );
@@ -58,6 +54,10 @@
       }
       const bar = document.getElementById('barchart');
       for (var i = 0; i<weekHours.length; i++) {
+        let localTime = hour - offsetInHours;
+        if (localTime < 0) {
+          localTime = 23 - offsetInHours;
+        }
         var div = document.createElement('div');
         const hourCount = weekHours[i];
         const day = Math.floor(i/24);
