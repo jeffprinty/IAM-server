@@ -43,7 +43,10 @@
     }
 
     getJSON('/api/requests', false, function(data){
-      console.log(new Date().getTimezoneOffset());
+      const offset = new Date().getTimezoneOffset();
+      const offsetInHours = offset/60;
+      const utc = new Date().toString().match(/([A-Z]+[\+-][0-9]+.*)/)[1];
+      console.log('offset',offset, offsetInHours);
       const { weekHours } = data;
       let max = Math.max.apply( Math, weekHours );
       if (max < 100) {
@@ -59,7 +62,7 @@
         const width = Math.floor(hourCount/max * 100);
         div.className = 'bar';
         div.style.cssText = `width: ${ width }%; background-color: ${ rainbow(i) }`;
-        div.innerHTML = `<label>${dayName}:${hour}</label>${hourCount}`;
+        div.innerHTML = `<label>${dayName}:${hour}</label><span>${utc}:${offsetInHours}</span>${hourCount}`;
         bar.appendChild(div);
       }
     })
