@@ -54,15 +54,15 @@
       }
       const bar = document.getElementById('barchart');
       for (var i = 0; i<weekHours.length; i++) {
-        let localTime = hour - offsetInHours;
-        if (localTime < 0) {
-          localTime = 23 - offsetInHours;
-        }
         var div = document.createElement('div');
         const hourCount = weekHours[i];
         const day = Math.floor(i/24);
         const dayName = days[day];
         const hour = i - (day*24);
+        let localTime = hour - offsetInHours;
+        if (localTime < 0) {
+          localTime = 23 - offsetInHours;
+        }
         const width = Math.floor(hourCount/max * 100);
         div.className = 'bar';
         div.style.cssText = `width: ${ width }%; background-color: ${ rainbow(i) }`;
