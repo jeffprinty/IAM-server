@@ -139,6 +139,7 @@ function saveWeekData() {
 
 app.use(
   route.get('/api/find', function (req) {
+    const institutions = db.getCollection('institutions');
     const query = req.query.q;
     const found = institutions.chain()
       .find({ 'SFSchoolName' : { '$regex': [query, 'i'] } })
@@ -169,6 +170,7 @@ app.use(
 
 app.use(
   route.get('/api/new', function (req) {
+    const institutions = db.getCollection('institutions');
     const query = req.query.q;
     const found = institutions.chain()
       .find({ 'SFSchoolName' : { '$regex': [query, 'i'] } })
