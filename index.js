@@ -1,5 +1,6 @@
-const koa = require('koa')  ;
-const fs = require('fs')  ;
+require('dotenv').config()
+const koa = require('koa');
+const fs = require('fs');
 const route = require('koa-route');
 const app = module.exports = new koa();
 const serve = require('koa-static');
@@ -9,6 +10,33 @@ const https = require('https');
 const cors = require('kcors');
 const loki = require('lokijs');
 const lfsa = require('./node_modules/lokijs/src/loki-fs-structured-adapter.js');
+
+const jsforce = require('jsforce');
+const conn = new jsforce.Connection({
+  oauth2 : {
+    clientId : process.env.CLIENTKEY,
+    clientSecret : process.env.CLIENTSECRET,
+    redirectUri : process.env.REDIRECTURI
+  },
+  loginUrl : process.env.LOGINURL,
+  instanceUrl : process.env.INSTANCEURL,
+  accessToken: process.env.ACCESSTOKEN
+});
+
+app.use(
+  route.get('/api/login', function (req) {
+    conn.loginByOAuth2(process.env.USERNAME, `${process.env.PASSWORD}${process.env.ACCESSTOKEN}`, function(err, userInfo) {
+      if (err) { return console.error(err); }
+      this.body = userInfo
+      console.log(conn.accessToken);
+      console.log(conn.instanceUrl);
+      console.log("User ID: " + userInfo.id);
+      console.log("Org ID: " + userInfo.organizationId);
+      // ...
+    });
+  })
+)
+
 
 const allSchools = require('./schoolsV4.json');
 const schools = allSchools.filter(function(sch){
