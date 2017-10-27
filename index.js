@@ -44,10 +44,11 @@ app.use(
     //     // console.log('Num of Fields : ', meta);
     //   });
     // });
-const allSchools = require('./201710271255.json');
+const allSchools = require('./201710271511.json');
 const schools = allSchools.filter(function(sch){
   return !sch['SFCID'].includes('C02777');
 });
+console.log(":: JSON: schools, filtered schools", allSchools.length, schools.length);
 
 const dbLoaded = e => console.log('loaded', e);
 var idbAdapter = new lfsa();
