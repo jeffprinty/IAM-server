@@ -75,28 +75,80 @@ export function cleanList(array, field){
   }
   const cleanArr = array.map
   const sorted = array.sort(compare);
+  let nocontactArray = [];
   let newArray = sorted.map(function(item,i) {
     const prev = array[i-1];
     const next = array[i+1];
     const current = item[field];
+    const country = provinces.includes(item.SchoolState) ? 'CA' : 'US';
+    const nocontact = country === 'CA' || nocontactSFCID.includes(item.SFCID);
+    let multiple = false;
     if (prev && prev[field] === current) {
-      return Object.assign({}, item, {
-        multiple: true,
-        SFSchoolName: decodeHTMLEntities(current)
-      })
+      multiple = true;
     } else if (next && next[field] === current) {
-      return Object.assign({}, item, {
-        multiple: true,
-        SFSchoolName: decodeHTMLEntities(current)
-      })
-    } else {
-      return Object.assign({}, item, {
-        multiple: false,
-        SFSchoolName: decodeHTMLEntities(current)
-      })
+      multiple = true;
     }
+    const updatedItem = Object.assign({}, item, {
+      multiple,
+      nocontact, country,
+      SFSchoolName: decodeHTMLEntities(current)
+    })
+    if (nocontact) nocontactArray.push(updatedItem);
+    return updatedItem;
   });
+  // console.log('nocontactArray', JSON.stringify(nocontactArray, null, 2));
   return newArray;
 }
 
+const provinces = ['AB','BC','MB','NB','NL','NS','NT','NU','ON','PE','QC','SK','YT'];
 
+const nocontactSFCID = [
+  'C01079',
+  'CTX060',
+  'CNC100',
+  'C02754',
+  'CAZ031',
+  'CAZA13',
+  'CCA246',
+  'CIN090',
+  'CIN100',
+  'CINA08',
+  'CIN095',
+  'CIN105',
+  'CPAA11',
+  'CPA317',
+  'CPA315',
+  'CIN120',
+  'CINA10',
+  'CINA13',
+  'CIN125',
+  'CIA115',
+  'CWIA09',
+  'CWIA14',
+  'CAZA17',
+  'CMI240',
+  'CMIA25',
+  'CTN180',
+  'CMO320',
+  'COR105',
+  'CAZ090',
+  'CAZ092',
+  'CIN110',
+  'CINA10',
+  'CINA13',
+  'C02734',
+  'CIN230',
+  'CIN235',
+  'CIN225',
+  'CIN225',
+  'CAZ105',
+  'CAZ110',
+  'CAZ115',
+  'CAL255',
+  'CCA636',
+  'C01832',
+  'CMO310',
+  'CTX645',
+  'CWI195',
+  'CWI190'
+]

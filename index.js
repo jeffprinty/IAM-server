@@ -1,5 +1,6 @@
 require('dotenv').config()
 const koa = require('koa');
+const mount = require('koa-mount');
 const fs = require('fs');
 const route = require('koa-route');
 const app = module.exports = new koa();
@@ -13,32 +14,37 @@ const lfsa = require('./node_modules/lokijs/src/loki-fs-structured-adapter.js');
 
 const jsforce = require('jsforce');
 const conn = new jsforce.Connection({
-  oauth2 : {
-    clientId : process.env.CLIENTKEY,
-    clientSecret : process.env.CLIENTSECRET,
-    redirectUri : process.env.REDIRECTURI
-  },
   loginUrl : process.env.LOGINURL,
   instanceUrl : process.env.INSTANCEURL,
-  accessToken: process.env.ACCESSTOKEN
+  // accessToken: process.env.ACCESSTOKEN
 });
 
 app.use(
   route.get('/api/login', function (req) {
-    conn.loginByOAuth2(process.env.USERNAME, `${process.env.PASSWORD}${process.env.ACCESSTOKEN}`, function(err, userInfo) {
-      if (err) { return console.error(err); }
-      this.body = userInfo
-      console.log(conn.accessToken);
-      console.log(conn.instanceUrl);
-      console.log("User ID: " + userInfo.id);
-      console.log("Org ID: " + userInfo.organizationId);
-      // ...
-    });
+      this.body = userInfo;
   })
 )
-
-
-const allSchools = require('./schoolsV4.json');
+    // conn.login(process.env.USERNAME, `${process.env.PASSWORD}`, function(err, userInfo) {
+    //   if (err) { return console.error(err); }
+    //   console.log(conn.accessToken);
+    //   console.log(conn.instanceUrl);
+    //   console.log("User ID: " + userInfo.id);
+    //   console.log("Org ID: " + userInfo.organizationId);
+    //   // ...
+    //   var records = [];
+    //   conn.query("SELECT Id, Name FROM User LIMIT 100", function(qerr, result) {
+    //     if (qerr) { return console.error(qerr); }
+    //     console.log('boop', result);
+    //     console.log("total : ", result.totalSize);
+    //     console.log("fetched : ", result.records);
+    //   });
+    //   conn.sobject("Account").describe(function(err, meta) {
+    //     if (err) { return console.error(err); }
+    //     console.log('Label : ' + meta.label);
+    //     // console.log('Num of Fields : ', meta);
+    //   });
+    // });
+const allSchools = require('./201710271255.json');
 const schools = allSchools.filter(function(sch){
   return sch['SFCID'] !== 'C02777';
 });
@@ -72,6 +78,8 @@ function dbInit() {
   })
 }
 dbInit();
+
+
 
 function addEntries() {
   let institutions = db.getCollection('institutions');
@@ -164,6 +172,19 @@ function saveWeekData() {
   }, 60000);
 }
 
+app.use(
+  route.get('/api/query', function (req, res) {
+    console.log('query');
+    let results = [];
+    conn.query("SELECT Id, Name FROM User LIMIT 100", (qerr, result) => {
+      if (qerr) { return console.error(qerr); }
+      results = result;
+      console.log("total : ", result.totalSize);
+      // console.log("fetched : ", result.records);
+      res.send(results);
+    });
+  })
+)
 
 app.use(
   route.get('/api/find', function (req) {

@@ -1,10 +1,13 @@
 import { cleanList, decodeHTMLEntities } from './fixJSON';
+import moment from 'moment';
 var changesets = require('diff-json');
 var fs = require('fs'),
     http = require('http'),
     xml2js = require('xml2js');
 var parser = new xml2js.Parser();
 var request = require('request');
+var prompt = require('prompt');
+prompt.start();
 request({
   headers: {
     'Content-Type': 'application/xml'
@@ -18,6 +21,7 @@ request({
   parser.parseString(body, function(err, result) {
     const { ArrayOfSchoolNameList } = result;
     const { SchoolNameList } = ArrayOfSchoolNameList;
+    console.log("SchoolNameList", SchoolNameList.length);
     fs.readFile( './schoolsV4.json', 'utf8', function(err, data) {
       const json = JSON.parse(data);
       const remap = SchoolNameList.map(school => {
@@ -40,14 +44,26 @@ request({
       }
       const sorted = fixed.sort(compare);
       const sortedOrig = json.sort(compare);
-      fs.writeFile('./schoolsOld.json', JSON.stringify(sortedOrig,null,2), function (err) {
-        if (err) return console.log(err);
-        console.log('writing to file');
+      console.log("sortedOrig", sortedOrig.length);
+      // fs.writeFile('./schoolsOld.json', JSON.stringify(sortedOrig,null,2), function (err) {
+      //   if (err) return console.log(err);
+      //   console.log('writing to file');
+      // });
+
+      prompt.get('outputFile', function (err, result) {
+        if (err) { return onErr(err); }
+        const outputFile = result.outputFile || moment().format('YYYYMMDDHHmm');
+        console.log('  outputFile: ' + outputFile);
+        fs.writeFile(`./${outputFile}.json`, JSON.stringify(sorted,null,2), function (err) {
+          if (err) return console.log(err);
+          console.log('writing to file');
+        });
       });
-      fs.writeFile('./schoolsNew.json', JSON.stringify(sorted,null,2), function (err) {
-        if (err) return console.log(err);
-        console.log('writing to file');
-      });
+
+      function onErr(err) {
+        console.log(err);
+        return 1;
+      }
       // console.log("json", json);
       // const list = json['ArrayOfSchoolNameList']['SchoolNameList'];
     });
