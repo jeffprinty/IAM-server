@@ -46,7 +46,7 @@ app.use(
     // });
 const allSchools = require('./201710271255.json');
 const schools = allSchools.filter(function(sch){
-  return sch['SFCID'] !== 'C02777';
+  return !sch['SFCID'].includes('C02777');
 });
 
 const dbLoaded = e => console.log('loaded', e);
