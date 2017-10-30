@@ -222,6 +222,7 @@ app.use(
     const analytics = db.getCollection('analytics');
     const currentWeek = weekOfYear(new Date());
     const currentWeekData = analytics.findObject({'week': currentWeek});
+    console.log("currentWeekData", currentWeekData);
     this.body = {
       weekHours: currentWeekData,
       count
