@@ -217,6 +217,17 @@ app.use(
     };
   })
 )
+app.use(
+  route.get('/api/analytics', function (req) {
+    const analytics = db.getCollection('analytics');
+    const currentWeek = weekOfYear(new Date());
+    const currentWeekData = analytics.findObject({'week': currentWeek});
+    this.body = {
+      weekHours: currentWeekData,
+      count
+    };
+  })
+)
 
 app.use(
   route.get('/api/new', function (req) {
