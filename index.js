@@ -223,7 +223,6 @@ app.use(
     const allAnalytics = analytics.find();
     const currentWeek = weekOfYear(new Date());
     // const currentWeekData = analytics.findObject({'week': currentWeek});
-    console.log("currentWeekData", currentWeekData);
     this.body = {
       weekHours: allAnalytics,
       count
