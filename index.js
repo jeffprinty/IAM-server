@@ -220,11 +220,12 @@ app.use(
 app.use(
   route.get('/api/analytics', function (req) {
     const analytics = db.getCollection('analytics');
+    const allAnalytics = analytics.find();
     const currentWeek = weekOfYear(new Date());
-    const currentWeekData = analytics.findObject({'week': currentWeek});
+    // const currentWeekData = analytics.findObject({'week': currentWeek});
     console.log("currentWeekData", currentWeekData);
     this.body = {
-      weekHours: currentWeekData,
+      weekHours: allAnalytics,
       count
     };
   })
