@@ -52,7 +52,7 @@ console.log(":: JSON: schools, filtered schools", allSchools.length, schools.len
 
 const dbLoaded = e => console.log('loaded', e);
 var idbAdapter = new lfsa();
-const db = new loki('./loki.db', {
+const db = new loki('./loki17.db', {
   autosave: true, 
   autosaveInterval: 60000
 });
@@ -224,8 +224,7 @@ app.use(
     const currentWeek = weekOfYear(new Date());
     // const currentWeekData = analytics.findObject({'week': currentWeek});
     this.body = {
-      weekHours: allAnalytics,
-      count
+      weekHours: allAnalytics
     };
   })
 )
